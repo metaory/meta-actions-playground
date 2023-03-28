@@ -1,6 +1,7 @@
 name: "Notion Integration"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
