@@ -31,6 +31,14 @@ jobs:
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$file was changed"
           done
+      - name: List all deleted files
+        run: |
+          for file in ${{ steps.changed-files.outputs.deleted_files }}; do
+            echo "$file was deleted"
+          done
+      - name: Echo all deleted files
+        run: |
+          echo ${{ steps.changed-files.outputs.any_deleted }}
       - name: Notion Update Diagram
         uses: metaory/notion-copy-changed-files-action@master
         with:
