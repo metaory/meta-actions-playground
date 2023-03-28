@@ -1,0 +1,46 @@
+name: "Notion Integration"
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+    paths:
+      - '**/.dia/*.png'
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
+      - name: Notion Update Diagram
+        uses: metaory/notion-copy-changed-files-action@master
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          notion-token: "${{ secrets.NOTION_TOKEN }}"
+          notion-page-id: "${{ vars.NOTION_PAGE_ID }}"
+          aws-s3-bucket: "${{ vars.AWS_S3_BUCKET }}"
+          aws-region: "${{ vars.AWS_REGION }}"
+          aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+          aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+          timezone: "${{ vars.TIMEZONE }}"
+          changed-diagrams: "${{ steps.changed-files.outputs.all_changed_files }}"
+
