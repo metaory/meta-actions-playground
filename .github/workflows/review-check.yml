@@ -22,6 +22,10 @@ jobs:
     steps:
       - name: fake
         run: echo 'hello world'
+      - name: get the count of requested reviewers
+        run: |
+          len=$(echo $requested_reviewers | jq '. | length')
+          echo "len = $len"
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Get changed files
