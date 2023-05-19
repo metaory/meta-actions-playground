@@ -90,9 +90,10 @@ jobs:
               users+=(${user})
             fi
 
-            # if [[ $state == 'CHANGES_REQUESTED' ]]; then
-            #   users=( "${users[@]/${user}*/}" )          # Remove by regex match
-            # fi
+            if [[ $state == 'CHANGES_REQUESTED' ]]; then
+              # users=( "${users[@]/${user}*/}" )          # Remove by regex match
+              echo "remove: $user"
+            fi
           done
 
           echo '+++++++++++++++++++++++++++++++++++++++++++'
