@@ -63,6 +63,8 @@ jobs:
       #     # echo $response | ConvertTo-Json | jq '.[] | select(.state=="APPROVED")'
 
       - name: unique approvals
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           raw=$(gh api \
             -H "Accept: application/vnd.github+json" \
