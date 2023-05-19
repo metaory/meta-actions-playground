@@ -1,4 +1,4 @@
-name: "Review Check"
+name: "ReviewCheck"
 
 on:
   workflow_dispatch:
@@ -29,6 +29,16 @@ jobs:
           # len=$(echo $requested_reviewers | jq '. | length')
           len=$(echo '${{ toJson(github.event.pull_request.requested_reviewers) }}' | jq '. | length')
           echo "len = $len"
+      - id: step1
+        run: echo "test=hello" >> "$GITHUB_OUTPUT"
+      - uses: LouisBrunner/checks-action@v1.6.0
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Test XYZ
+          conclusion: ${{ job.status }}
+          output: |
+            {"summary":"${{ steps.step1.outputs.summary }}"}
       - name: TestFail
         run: exit 1
       - name: Check out repository code
