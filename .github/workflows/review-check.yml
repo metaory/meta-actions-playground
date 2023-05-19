@@ -70,6 +70,13 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
             -d '{"state":"failure","target_url":"https://example.com/build/status","description":"The build failed!","context":"review-enforcer"}'
 
+      - uses: github-actions-tools/gh-reviews-count@v0.0.1
+        id: reviewsCount
+      - run: echo "The approved reviews count is ${REVIEWS}"
+        if: success() && steps.reviewsCount.outputs.approved
+        env:
+          REVIEWS: ${{ steps.reviewsCount.outputs.approved }}
+
       - name: TestFail
         run: exit 0
       - name: Check out repository code
