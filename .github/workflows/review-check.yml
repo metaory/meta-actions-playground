@@ -87,12 +87,12 @@ jobs:
             user=$(_jq '.user.login')
 
             if [[ $state == 'APPROVED' ]]; then
-              users+=($user)
+              users+=(${user})
             fi
 
-            if [[ $state == 'CHANGES_REQUESTED' ]]; then
-              users=( "${users[@]/${user}*/}" )          # Remove by regex match
-            fi
+            # if [[ $state == 'CHANGES_REQUESTED' ]]; then
+            #   users=( "${users[@]/${user}*/}" )          # Remove by regex match
+            # fi
           done
 
           echo '+++++++++++++++++++++++++++++++++++++++++++'
