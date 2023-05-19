@@ -56,8 +56,9 @@ jobs:
           --url https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
           --header 'Authorization: $base64AuthInfo' \
           --header 'Content-Type: application/json')
-          echo $response | jq '.[] | select(.state=="APPROVED")'
-          echo $response | ConvertTo-Json | jq '.[] | select(.state=="APPROVED")'
+          total=$(echo $response | jq '.[] | select(.state=="APPROVED")')
+          echo "total = $total"
+          # echo $response | ConvertTo-Json | jq '.[] | select(.state=="APPROVED")'
 
       - name: commit-status
         run: |
