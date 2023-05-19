@@ -57,6 +57,7 @@ jobs:
           --header 'Authorization: $base64AuthInfo' \
           --header 'Content-Type: application/json')
           echo $response | jq '.[] | select(.state=="APPROVED")'
+          echo $response | ConvertTo-Json | jq '.[] | select(.state=="APPROVED")'
 
       - name: commit-status
         run: |
