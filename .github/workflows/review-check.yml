@@ -26,11 +26,19 @@ jobs:
         run: echo 'hello world'
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: get the count of requested reviewers
+      - name: get the count of requested reviewers 1
         run: |
           # len=$(echo $requested_reviewers | jq '. | length')
           len=$(echo '${{ toJson(github.event.pull_request.requested_reviewers) }}' | jq '. | length')
           echo "len = $len"
+      - name: get the count of requested reviewers 2
+        run: |
+          length=$(echo $requested_reviewers | jq '. | length')
+          echo "length = $length"
+        env:
+          requested_reviewers: ${{ toJson(github.event.pull_request.requested_reviewers) }}
+      - name: get the count of requested reviewers 3
+        run: echo "reviwers = ${{ toJson(github.event.pull_request.requested_reviewers) }}"
       - id: step1
         run: echo "test=hello" >> "$GITHUB_OUTPUT"
       # - name: Extract branch name
@@ -41,14 +49,6 @@ jobs:
       #   run: echo "branch = ${{ steps.extract_branch.outputs.branch }}"
       - name: echo branch name
         run: echo "branch = ${{ github.event.pull_request.head.ref }}"
-      - name: echo total reviwers
-        run: echo "reviwers = ${{ toJson(github.event.pull_request.requested_reviewers) }}"
-      - name: get the count of requested reviewers
-        run: |
-          length=$(echo $requested_reviewers | jq '. | length')
-          echo "length = $length"
-        env:
-          requested_reviewers: ${{ toJson(github.event.pull_request.requested_reviewers) }}
       - name: List reviews on the pull request
         shell: bash
         run: |
@@ -72,12 +72,12 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
             -d '{"state":"failure","target_url":"https://example.com/build/status","description":"The build failed!","context":"review-enforcer"}'
 
-      - uses: github-actions-tools/gh-reviews-count@v0.0.1
-        id: reviewsCount
-      - run: echo "The approved reviews count is ${REVIEWS}"
-        if: success() && steps.reviewsCount.outputs.approved
-        env:
-          REVIEWS: ${{ steps.reviewsCount.outputs.approved }}
+      # - uses: github-actions-tools/gh-reviews-count@v0.0.1
+      #   id: reviewsCount
+      # - run: echo "The approved reviews count is ${REVIEWS}"
+      #   if: success() && steps.reviewsCount.outputs.approved
+      #   env:
+      #     REVIEWS: ${{ steps.reviewsCount.outputs.approved }}
 
       - name: TestFail
         run: exit 0
