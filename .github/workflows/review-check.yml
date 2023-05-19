@@ -31,6 +31,12 @@ jobs:
           echo "len = $len"
       - id: step1
         run: echo "test=hello" >> "$GITHUB_OUTPUT"
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+        id: extract_branch
+      - name: echo branch name
+        run: echo "branch = ${{ steps.extract_branch.outputs.branch }}"
       - name: commit-status
         run: |
           curl -L \
