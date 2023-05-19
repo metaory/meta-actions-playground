@@ -49,19 +49,46 @@ jobs:
       #   run: echo "branch = ${{ steps.extract_branch.outputs.branch }}"
       - name: echo branch name
         run: echo "branch = ${{ github.event.pull_request.head.ref }}"
-      - name: List reviews on the pull request
-        shell: bash
-        run: |
-          token=${{ secrets.GITHUB_TOKEN }}
-          base64AuthInfo='$token | base64 -e'
-          response=$(curl --request GET \
-          --url https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
-          --header 'Authorization: $base64AuthInfo' \
-          --header 'Content-Type: application/json')
-          total=$(echo $response | jq '.[] | select(.state=="APPROVED")')
-          echo "total = $total"
-          # echo $response | ConvertTo-Json | jq '.[] | select(.state=="APPROVED")'
+      # - name: List reviews on the pull request
+      #   shell: bash
+      #   run: |
+      #     token=${{ secrets.GITHUB_TOKEN }}
+      #     base64AuthInfo='$token | base64 -e'
+      #     response=$(curl --request GET \
+      #     --url https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
+      #     --header 'Authorization: $base64AuthInfo' \
+      #     --header 'Content-Type: application/json')
+      #     total=$(echo $response | jq '.[] | select(.state=="APPROVED")')
+      #     echo "total = $total"
+      #     # echo $response | ConvertTo-Json | jq '.[] | select(.state=="APPROVED")'
 
+      - name: unique approvals
+        run: |
+          raw=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/metaory/meta-actions-playground/pulls/7/reviews)
+
+          users=()
+
+          for row in $(echo "${raw}" | jq -r '.[] | @base64'); do
+            _jq() {
+              echo ${row} | base64 --decode | jq -r ${1}
+            }
+            echo $(_jq '.user.login')
+            users+=($(_jq '.user.login')) # Also Push
+          done
+
+          echo '+++++++++++++++++++++++++++++++++++++++++++'
+
+          declare -A uniq_tmp
+
+          for ip in "${users[@]}"; do
+            uniq_tmp[$ip]=0 # assigning a placeholder
+          done
+
+          echo "unique approval: ${!uniq_tmp[@]}" # only the keys
+          echo "approvals count: ${#uniq_tmp[@]}"
       - name: commit-status
         run: |
           curl -L \
