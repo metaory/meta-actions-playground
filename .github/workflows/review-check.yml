@@ -29,8 +29,8 @@ jobs:
           # len=$(echo $requested_reviewers | jq '. | length')
           len=$(echo '${{ toJson(github.event.pull_request.requested_reviewers) }}' | jq '. | length')
           echo "len = $len"
-      - uses: actions/create-outputs@v0.0.0-fake
-        id: test
+      - id: step1
+        run: echo "test=hello" >> "$GITHUB_OUTPUT"
       - uses: LouisBrunner/checks-action@v1.6.0
         if: always()
         with:
@@ -38,7 +38,7 @@ jobs:
           name: Test XYZ
           conclusion: ${{ job.status }}
           output: |
-            {"summary":"${{ steps.test.outputs.summary }}"}
+            {"summary":"${{ steps.step1.outputs.summary }}"}
       - name: TestFail
         run: exit 1
       - name: Check out repository code
