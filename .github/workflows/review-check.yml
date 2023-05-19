@@ -37,6 +37,8 @@ jobs:
         id: extract_branch
       - name: echo branch name
         run: echo "branch = ${{ steps.extract_branch.outputs.branch }}"
+      - name: echo branch name2
+        run: echo ${GITHUB_REF##*/}
       - name: commit-status
         run: |
           curl -L \
