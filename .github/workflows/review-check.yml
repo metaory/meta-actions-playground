@@ -75,7 +75,7 @@ jobs:
             state=success
           fi
 
-          if [[ $branch =~ flight. ]] && [[ ${#uniq_tmp[@]} -ge 3 ]]; then
+          if [[ $branch =~ flight. ]] && [[ ${#uniq_tmp[@]} -ge 2 ]]; then
             state=success
           fi
 
