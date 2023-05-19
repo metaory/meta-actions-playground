@@ -84,8 +84,14 @@ jobs:
             }
             state=$(_jq '.state')
 
+            user=$(_jq '.user.login')
+
             if [[ $state == 'APPROVED' ]]; then
-              users+=($(_jq '.user.login'))
+              users+=($user)
+            fi
+
+            if [[ $state == 'CHANGES_REQUESTED' ]]; then
+              users=( "${users[@]/${user}*/}" )          # Remove by regex match
             fi
           done
 
