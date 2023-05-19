@@ -40,7 +40,14 @@ jobs:
       - name: echo branch name
         run: echo "branch = ${{ github.event.pull_request.head.ref }}"
       - name: echo total reviwers
-        run: echo "reviwers = ${{ github.event.pull_request.requested_reviewers }}"
+        run: echo "reviwers = ${{ toJson(github.event.pull_request.requested_reviewers) }}"
+      - name: get the count of requested reviewers
+        run: |
+          length=$(echo $requested_reviewers | jq '. | length')
+          echo "length = $length"
+        env:
+          requested_reviewers: ${{ toJson(github.event.pull_request.requested_reviewers) }}
+
       - name: commit-status
         run: |
           curl -L \
