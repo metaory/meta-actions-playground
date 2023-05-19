@@ -77,10 +77,11 @@ jobs:
             _jq() {
               echo ${row} | base64 --decode | jq -r ${1}
             }
-            # echo $(_jq '.user.login')
             state=$(_jq '.state')
-            echo "state: $state"
-            users+=($(_jq '.user.login')) # Also Push
+
+            if [[ $state == 'APPROVED' ]]; then
+              users+=($(_jq '.user.login'))
+            fi
           done
 
           echo '+++++++++++++++++++++++++++++++++++++++++++'
