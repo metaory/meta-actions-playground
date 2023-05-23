@@ -22,10 +22,10 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - name: fake
-        run: echo 'hello world'
-      - name: Check out repository code
-        uses: actions/checkout@v3
+      - name: get the count of requested reviewers 1
+        run: |
+          len=$(echo '${{ toJson(github.event.pull_request.requested_reviewers) }}' | jq '. | length')
+          echo "len = $len"
       - name: unique approvals
         env:
           GH_TOKEN: ${{ github.token }}
