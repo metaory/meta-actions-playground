@@ -34,7 +34,7 @@ jobs:
           raw=$(gh api \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${githubrepository}/pulls/${pr_num}/reviews)
+            /repos/${{ github.repository }}/pulls/${pr_num}/reviews)
 
           users=()
           for row in $(echo "${raw}" | jq -r '.[] | @base64'); do
