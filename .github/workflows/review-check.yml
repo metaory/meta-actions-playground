@@ -102,21 +102,18 @@ jobs:
 
           for ip in "${users[@]}"; do
             uniq_tmp[$ip]=0 # assigning a placeholder
-          done
-
-          echo "unique approval: ${!uniq_tmp[@]}" # only the keys
-          echo "approvals count: ${#uniq_tmp[@]}"
+          done echo "unique approval: ${!uniq_tmp[@]}" # only the keys echo "approvals count: ${#uniq_tmp[@]}"
 
           branch="${{ github.event.pull_request.head.ref }}"
           echo "branch         : ${branch}"
 
           state=failure
 
-          if [[ $branch =~ test. ]] && [[ ${#uniq_tmp[@]} -ge 1 ]]; then
+          if [[ $branch = test* ]] && [[ ${#uniq_tmp[@]} -ge 1 ]]; then
             state=success
           fi
 
-          if [[ $branch =~ flight. ]] && [[ ${#uniq_tmp[@]} -ge 2 ]]; then
+          if [[ $branch = flight* ]] && [[ ${#uniq_tmp[@]} -ge 2 ]]; then
             state=success
           fi
 
