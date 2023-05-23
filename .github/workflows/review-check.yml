@@ -3,17 +3,17 @@ name: "ApprovalStatus"
 on:
   workflow_dispatch:
   pull_request:
-    types: [synchronizer, opened, reopened]
+    types: [synchronize, opened, reopened]
   pull_request_review:
     types: [submitted]
   # check_run:
   #   types: [created]
 
 permissions:
-#   actions: write
-#   contents: write
-#   pull-requests: write
-#   checks: write
+  #   actions: write
+  #   contents: write
+  #   pull-requests: write
+  #   checks: write
   statuses: write
 
 concurrency:
@@ -23,7 +23,7 @@ concurrency:
 jobs:
   main:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    # if: github.ref == 'refs/heads/master'
     steps:
       - name: approval status
         env:
@@ -85,35 +85,36 @@ jobs:
 
           # PR Source Branch
           branch="${{ github.event.pull_request.head.ref }}"
+          target="${{ github.event.pull_request.base.ref }}"
+          echo "branch:" "$branch"
+          echo "target:" "$target"
 
           # Default Commit Status
           state=failure
 
           # Success Condition for Hotfix
-          if [[ $branch == ${HOTFIX_PREFIX}* ]] && [[ ${approved_count} -ge $HOTFIX_MIN_APPROVALS ]]; then
+          if [[ $branch == ${HOTFIX_PREFIX}* && ${approved_count} -ge $HOTFIX_MIN_APPROVALS ]]; then
             state=success
           fi
 
           # Success Condition for Flight
-          if [[ $branch == ${FLIGHT_PREFIX}* ]] && [[ ${approved_count} -ge $FLIGHT_MIN_APPROVALS ]]; then
+          if [[ $branch == ${FLIGHT_PREFIX}* && ${approved_count} -ge $FLIGHT_MIN_APPROVALS ]]; then
             state=success
           fi
 
           # Success Condition for anything Else
-          if ! [[ $branch == ${FLIGHT_PATTERN}* ]] && ! [[ $branch == ${HOTFIX_PATTERN}* ]]; then
-            if [[ ${approved_count} -ge $total_expected_count ]]; then
-              state=success
-            fi
+          if [[ ${approved_count} -ge ${total_expected_count} ]]; then
+            state=success
           fi
 
-          # ### [ DEBUG ] ### #
+          # ###### [ DEBUG ] ###### #
           echo "state           :" "${state}"
           echo "branch          :" "${branch}"
           echo "total count     :" "${#users[@]}"
-          echo "xotal count     :" "${total_expected_count}"
+          echo "expected count  :" "${total_expected_count}"
           echo "unique count    :" "${#uniq_tmp[@]}"
           echo "unique approval :" "${!uniq_tmp[@]}"
-          # ###################
+          # #########################
 
           # Create Commit status
           # https://docs.github.com/en/rest/commits/statuses?apiVersion=2022-11-28#create-a-commit-status
@@ -124,3 +125,12 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
             -d "{\"state\":\"${state}\",\"target_url\":\"${TARGET_URL}\",\"description\":\"${DESCRIPTION}\",\"context\":\"${CONTEXT}\"}"
+          # gh api \
+          #   --method POST \
+          #   -H "Accept: application/vnd.github+json" \
+          #   -H "X-GitHub-Api-Version: 2022-11-28" \
+          #   /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
+          #   -f state=$state \
+          #   -f target_url=$TARGET_URL \
+          #   -f description=$DESCRIPTION \
+          #   -f context=$CONTEXT
