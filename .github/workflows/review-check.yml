@@ -9,12 +9,12 @@ on:
   # check_run:
   #   types: [created]
 
-# permissions:
+permissions:
 #   actions: write
 #   contents: write
 #   pull-requests: write
 #   checks: write
-#   statuses: write
+  statuses: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
