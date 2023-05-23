@@ -23,6 +23,7 @@ concurrency:
 jobs:
   main:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: approval status
         env:
