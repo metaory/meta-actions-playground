@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.base.ref == 'master'
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
       - name: approval status
         env:
           GH_TOKEN: ${{ github.token }}
