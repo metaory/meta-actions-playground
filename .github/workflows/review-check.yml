@@ -136,7 +136,11 @@ jobs:
           # #########################
 
           echo "base.sha            :" "${{ github.event.pull_request.base.sha }}"
+          echo "base.ref            :" "${{ github.event.pull_request.base.ref }}"
+
           echo "head.sha            :" "${{ github.event.pull_request.head.sha }}"
+          echo "head.ref            :" "${{ github.event.pull_request.head.ref }}"
+
           echo "GITHUB_SHA          :" "$GITHUB_SHA"
           echo "GITHUB_WORKFLOW_SHA :" "$GITHUB_WORKFLOW_SHA"
           echo "GITHUB_WORKFLOW_REF :" "$GITHUB_WORKFLOW_REF"
