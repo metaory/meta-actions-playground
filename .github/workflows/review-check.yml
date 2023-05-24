@@ -102,10 +102,13 @@ jobs:
           event_requested_reviewers_count=$(echo '${{ toJson(github.event.pull_request.requested_reviewers) }}' | jq '. | length')
 
           # Total Requested Reviewers Count
-          requested_reviewers_count=$(gh api \
+          requested_reviewers=$(gh api \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/pulls/${pr_num}/requested_reviewers | jq '.users | length')
+            /repos/${{ github.repository }}/pulls/${pr_num}/requested_reviewers)
+          requested_reviewers_users=$(echo "$requested_reviewers" | jq '.users | length')
+          requested_reviewers_teams=$(echo "$requested_reviewers" | jq '.teams | length')
+          requested_reviewers_count=$((requested_reviewers_users + requested_reviewers_teams))
 
           # PR Source Branch
           branch="${{ github.event.pull_request.head.ref }}"
@@ -127,11 +130,13 @@ jobs:
           fi
 
           # ###### [ DEBUG ] ###### #
-          __log state pr_num branch base approved_count event_requested_reviewers_count requested_reviewers_count
+          __log state branch base approved_count event_requested_reviewers_count requested_reviewers_count
           echo "total count:" "${#users[@]}"
           echo "unique approval:" "${!uniq_tmp[@]}"
           # #########################
 
+          echo "head.sha   :" "${{ github.event.pull_request.head.sha }}"
+          echo "GITHUB_SHA :" "$GITHUB_SHA"
           # Create Commit status
           # https://docs.github.com/en/rest/commits/statuses?apiVersion=2022-11-28#create-a-commit-status
           curl -L \
