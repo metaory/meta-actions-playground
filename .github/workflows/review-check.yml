@@ -135,8 +135,13 @@ jobs:
           echo "unique approval:" "${!uniq_tmp[@]}"
           # #########################
 
-          echo "head.sha   :" "${{ github.event.pull_request.head.sha }}"
-          echo "GITHUB_SHA :" "$GITHUB_SHA"
+          echo "base.sha            :" "${{ github.event.pull_request.base.sha }}"
+          echo "head.sha            :" "${{ github.event.pull_request.head.sha }}"
+          echo "GITHUB_SHA          :" "$GITHUB_SHA"
+          echo "GITHUB_WORKFLOW_SHA :" "$GITHUB_WORKFLOW_SHA"
+          echo "GITHUB_WORKFLOW_REF :" "$GITHUB_WORKFLOW_REF"
+          echo "GITHUB_WORKSPACE    :" "$GITHUB_WORKSPACE"
+
           # Create Commit status
           # https://docs.github.com/en/rest/commits/statuses?apiVersion=2022-11-28#create-a-commit-status
           curl -L \
