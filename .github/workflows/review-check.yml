@@ -139,6 +139,10 @@ jobs:
           echo "unique approval:" "${!uniq_tmp[@]}"
           # #########################
 
+          # group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+          echo "pr_num              :" "${pr_num}"
+          echo "pr_numX             :" "${{ github.event.pull_request.number }}"
+
           echo "base.sha            :" "${{ github.event.pull_request.base.sha }}"
           echo "base.ref            :" "${{ github.event.pull_request.base.ref }}"
 
