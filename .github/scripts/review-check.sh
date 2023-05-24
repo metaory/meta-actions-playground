@@ -29,7 +29,7 @@ pr_num=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
 raw=$(gh api \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
-  /repos/${{ github.repository }}/pulls/${pr_num}/reviews)
+  /repos/${GITHUB_ACTION_REPOSITORY}/pulls/${pr_num}/reviews)
 
 # Filter reviwers to APPROVED only
 users=()
