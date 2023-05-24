@@ -38,4 +38,4 @@ jobs:
           TARGET_URL: ${{ vars.CHECK_TARGET_URL }}
           DESCRIPTION: ${{ vars.CHECK_DESCRIPTION }}
           CONTEXT: ${{ vars.CHECK_NAME }}
-        run: bash ${{ github.repository }}/.github/scripts/review-check.sh
+        run: bash .github/scripts/review-check.sh
